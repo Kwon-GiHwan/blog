@@ -1,0 +1,57 @@
+---
+// Placeholder component - requires GitHub repo setup
+// Get configuration from https://giscus.app after deployment
+---
+
+<div class="giscus-wrapper border-t border-dark-border pt-8">
+  <h2 class="text-2xl font-bold text-white mb-6">Comments</h2>
+
+  <!-- Giscus will be injected here -->
+  <div
+    class="giscus"
+    data-repo="YOUR_USERNAME/blog"
+    data-repo-id="YOUR_REPO_ID"
+    data-category="Comments"
+    data-category-id="YOUR_CATEGORY_ID"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme="dark"
+    data-lang="en"
+    crossorigin="anonymous"
+  ></div>
+</div>
+
+<script>
+  function loadGiscus() {
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    script.setAttribute('data-repo', 'YOUR_USERNAME/blog');
+    script.setAttribute('data-repo-id', 'YOUR_REPO_ID');
+    script.setAttribute('data-category', 'Comments');
+    script.setAttribute('data-category-id', 'YOUR_CATEGORY_ID');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '1');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'top');
+    script.setAttribute('data-theme', 'dark');
+    script.setAttribute('data-lang', 'en');
+    script.crossOrigin = 'anonymous';
+    script.async = true;
+
+    const giscusDiv = document.querySelector('.giscus');
+    if (giscusDiv) {
+      giscusDiv.innerHTML = '';
+      giscusDiv.appendChild(script);
+    }
+  }
+
+  // Load on initial page load
+  document.addEventListener('DOMContentLoaded', loadGiscus);
+
+  // Reload on view transitions
+  document.addEventListener('astro:page-load', loadGiscus);
+</script>

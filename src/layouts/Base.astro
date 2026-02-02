@@ -1,0 +1,59 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'A developer portfolio and blog' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <ViewTransitions />
+  </head>
+  <body class="bg-dark-bg text-dark-text min-h-screen">
+    <header class="border-b border-dark-border">
+      <nav class="max-w-6xl mx-auto px-4 py-6">
+        <div class="flex justify-between items-center">
+          <a href="/" class="text-xl font-bold text-white hover:text-blue-400 transition-colors">
+            Portfolio
+          </a>
+          <div class="flex gap-6">
+            <a href="/projects" class="hover:text-white transition-colors">Projects</a>
+            <a href="/tags" class="hover:text-white transition-colors">Tags</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-12">
+      <slot />
+    </main>
+
+    <footer class="border-t border-dark-border mt-16">
+      <div class="max-w-6xl mx-auto px-4 py-8 text-center text-dark-muted">
+        <p>&copy; {new Date().getFullYear()} Your Name. Built with Astro.</p>
+      </div>
+    </footer>
+  </body>
+</html>

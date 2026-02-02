@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@layouts/Base.astro';
+import { filterDrafts, getAllTags } from '@utils/index';
+
+const allProjects = await getCollection('projects');
+const publishedProjects = filterDrafts(allProjects);
+const allTags = getAllTags(publishedProjects);
+
+// Count posts per tag
+const tagCounts = allTags.map(tag => ({
+  tag,
+  count: publishedProjects.filter(p => p.data.tags.includes(tag)).length,
+}));
+---
+
+<Base title="All Tags" description="Browse projects by tag">
+  <div class="mb-12">
+    <h1 class="text-4xl font-bold text-white mb-4">All Tags</h1>
+    <p class="text-dark-muted">
+      {allTags.length} {allTags.length === 1 ? 'tag' : 'tags'} in total
+    </p>
+  </div>
+
+  <div class="flex flex-wrap gap-4">
+    {tagCounts.map(({ tag, count }) => (
+      <a
+        href={`/tags/${tag}`}
+        class="group px-6 py-3 bg-dark-surface border border-dark-border rounded-lg hover:border-blue-400 transition-all hover:shadow-lg hover:shadow-blue-400/10"
+      >
+        <span class="text-lg font-semibold text-white group-hover:text-blue-400 transition-colors">
+          #{tag}
+        </span>
+        <span class="ml-2 text-sm text-dark-muted">({count})</span>
+      </a>
+    ))}
+  </div>
+
+  {allTags.length === 0 && (
+    <div class="text-center py-16 border border-dashed border-dark-border rounded-lg">
+      <p class="text-dark-muted text-lg">No tags yet.</p>
+    </div>
+  )}
+</Base>

@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import BlogPost from '@layouts/BlogPost.astro';
+import { filterDrafts } from '@utils/index';
+
+export async function getStaticPaths() {
+  const allProjects = await getCollection('projects');
+  const publishedProjects = filterDrafts(allProjects);
+
+  return publishedProjects.map(project => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+const { title, description, date, tags } = project.data;
+
+// Get raw content for reading time and TOC
+const rawContent = project.body;
+---
+
+<BlogPost
+  title={title}
+  description={description}
+  date={date}
+  tags={tags}
+  content={rawContent}
+>
+  <Content />
+</BlogPost>

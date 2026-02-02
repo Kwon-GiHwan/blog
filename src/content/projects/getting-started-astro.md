@@ -1,0 +1,46 @@
+---
+title: "Getting Started with Astro and TypeScript"
+description: "Learn how to build blazing-fast static sites with Astro's content collections and TypeScript for full type safety."
+date: 2026-02-02
+tags: ["astro", "typescript", "web-dev"]
+draft: false
+---
+
+## Introduction
+
+Welcome to my first blog post! This is a sample post demonstrating the features of this Astro-powered blog.
+
+### Why Astro?
+
+Astro is a modern static site generator that delivers:
+
+- **Zero JavaScript by default** - Ship only what you need
+- **Component islands** - Hydrate interactive components on demand
+- **Content collections** - Type-safe markdown with Zod schemas
+
+## Code Examples
+
+Here's a simple TypeScript function:
+
+```typescript
+function greet(name: string): string {
+  return `Hello, ${name}!`;
+}
+
+console.log(greet("World"));
+```
+
+### More Features
+
+This blog includes:
+
+1. Syntax highlighting with Shiki
+2. Table of contents generation
+3. Reading time calculation
+4. Tag-based filtering
+
+> "The best way to predict the future is to invent it." - Alan Kay
+
+## Conclusion
+
+Thanks for reading! Check out more posts tagged with [#astro](/tags/astro).

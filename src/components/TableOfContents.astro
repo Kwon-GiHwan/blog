@@ -1,0 +1,62 @@
+---
+import type { TocItem } from '@utils/toc';
+
+interface Props {
+  items: TocItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="toc sticky top-8" aria-label="Table of Contents">
+  <h2 class="text-sm font-semibold text-white mb-4 uppercase tracking-wide">
+    On This Page
+  </h2>
+  <ul class="space-y-2 text-sm border-l-2 border-dark-border">
+    {items.map(item => (
+      <li class={item.depth === 3 ? 'ml-4' : ''}>
+        <a
+          href={`#${item.slug}`}
+          class="toc-link block py-1 px-3 text-dark-muted hover:text-white hover:border-l-2 hover:border-blue-400 transition-colors -ml-[2px]"
+          data-target={item.slug}
+        >
+          {item.text}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Highlight active section on scroll
+  function updateActiveLink() {
+    const headings = document.querySelectorAll('h2[id], h3[id]');
+    const tocLinks = document.querySelectorAll('.toc-link');
+
+    let current = '';
+
+    headings.forEach(heading => {
+      const rect = heading.getBoundingClientRect();
+      if (rect.top <= 100) {
+        current = heading.id;
+      }
+    });
+
+    tocLinks.forEach(link => {
+      link.classList.remove('text-blue-400', 'border-blue-400');
+      if (link.getAttribute('data-target') === current) {
+        link.classList.add('text-blue-400', 'border-blue-400');
+      }
+    });
+  }
+
+  window.addEventListener('scroll', updateActiveLink);
+  document.addEventListener('astro:page-load', updateActiveLink);
+</script>
+
+<style>
+  .toc {
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+</style>

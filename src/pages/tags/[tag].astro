@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@layouts/Base.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import { filterDrafts, sortByDate, getAllTags } from '@utils/index';
+
+export async function getStaticPaths() {
+  const allProjects = await getCollection('projects');
+  const publishedProjects = filterDrafts(allProjects);
+  const allTags = getAllTags(publishedProjects);
+
+  return allTags.map(tag => {
+    const filteredProjects = publishedProjects.filter(project =>
+      project.data.tags.includes(tag)
+    );
+
+    return {
+      params: { tag },
+      props: { projects: sortByDate(filteredProjects), tag },
+    };
+  });
+}
+
+const { projects, tag } = Astro.props;
+---
+
+<Base title={`Tag: ${tag}`} description={`All projects tagged with ${tag}`}>
+  <div class="mb-12">
+    <h1 class="text-4xl font-bold text-white mb-4">
+      <span class="text-blue-400">#</span>{tag}
+    </h1>
+    <p class="text-dark-muted">
+      {projects.length} {projects.length === 1 ? 'project' : 'projects'} with this tag
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {projects.map(project => (
+      <ProjectCard project={project} />
+    ))}
+  </div>
+
+  <div class="mt-12">
+    <a
+      href="/tags"
+      class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+    >
+      ← View all tags
+    </a>
+  </div>
+</Base>

@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@layouts/Base.astro';
+import ProjectCard from '@components/ProjectCard.astro';
+import { filterDrafts, sortByDate, paginate } from '@utils/index';
+
+const allProjects = await getCollection('projects');
+const publishedProjects = sortByDate(filterDrafts(allProjects));
+
+const POSTS_PER_PAGE = 6;
+const paginatedPosts = paginate(publishedProjects, POSTS_PER_PAGE);
+
+// Get current page from URL params (default to 1)
+const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
+const pageData = paginatedPosts.find(p => p.page === currentPage) || paginatedPosts[0];
+
+const totalPages = paginatedPosts.length;
+---
+
+<Base title="All Projects" description="Browse all my projects and blog posts">
+  <div class="mb-12">
+    <h1 class="text-4xl font-bold text-white mb-4">All Projects</h1>
+    <p class="text-dark-muted">
+      {publishedProjects.length} {publishedProjects.length === 1 ? 'project' : 'projects'} in total
+    </p>
+  </div>
+
+  {pageData ? (
+    <>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {pageData.data.map(project => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <nav class="flex justify-center gap-2" aria-label="Pagination">
+          {currentPage > 1 && (
+            <a
+              href={`/projects?page=${currentPage - 1}`}
+              class="px-4 py-2 border border-dark-border rounded hover:border-blue-400 transition-colors"
+            >
+              ← Previous
+            </a>
+          )}
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+            <a
+              href={`/projects?page=${page}`}
+              class={`px-4 py-2 border rounded transition-colors ${
+                page === currentPage
+                  ? 'bg-blue-400 text-dark-bg border-blue-400'
+                  : 'border-dark-border hover:border-blue-400'
+              }`}
+            >
+              {page}
+            </a>
+          ))}
+
+          {currentPage < totalPages && (
+            <a
+              href={`/projects?page=${currentPage + 1}`}
+              class="px-4 py-2 border border-dark-border rounded hover:border-blue-400 transition-colors"
+            >
+              Next →
+            </a>
+          )}
+        </nav>
+      )}
+    </>
+  ) : (
+    <div class="text-center py-16 border border-dashed border-dark-border rounded-lg">
+      <p class="text-dark-muted text-lg">No projects found.</p>
+    </div>
+  )}
+</Base>

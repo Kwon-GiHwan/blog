@@ -1,0 +1,60 @@
+---
+import Base from './Base.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import GiscusComments from '@components/GiscusComments.astro';
+import { formatDate, getReadingTime } from '@utils/index';
+import { generateToc } from '@utils/toc';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  content: string;
+}
+
+const { title, description, date, tags, content } = Astro.props;
+const readingTime = getReadingTime(content);
+const toc = generateToc(content);
+---
+
+<Base title={title} description={description}>
+  <article class="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-12">
+    <!-- Main Content -->
+    <div class="min-w-0">
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold text-white mb-4">{title}</h1>
+        <div class="flex flex-wrap gap-4 text-sm text-dark-muted">
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          <span>•</span>
+          <span>{readingTime}</span>
+        </div>
+        <div class="flex flex-wrap gap-2 mt-4">
+          {tags.map(tag => (
+            <a
+              href={`/tags/${tag}`}
+              class="px-3 py-1 bg-dark-surface border border-dark-border rounded-full text-sm hover:border-blue-400 transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      </header>
+
+      <div class="prose prose-invert max-w-none">
+        <slot />
+      </div>
+
+      <div class="mt-16">
+        <GiscusComments />
+      </div>
+    </div>
+
+    <!-- Sidebar with TOC -->
+    {toc.length > 0 && (
+      <aside class="hidden lg:block">
+        <TableOfContents items={toc} />
+      </aside>
+    )}
+  </article>
+</Base>

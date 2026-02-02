@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply font-sans antialiased;
+  }
+
+  /* Headings get auto-IDs, add scroll margin for anchor links */
+  h1[id],
+  h2[id],
+  h3[id],
+  h4[id],
+  h5[id],
+  h6[id] {
+    @apply scroll-mt-20;
+  }
+}
+
+@layer components {
+  /* Code block styling */
+  .prose pre {
+    @apply bg-dark-surface border border-dark-border rounded-lg;
+  }
+
+  .prose code {
+    @apply text-pink-400 bg-dark-surface px-1.5 py-0.5 rounded text-sm;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0 text-base;
+  }
+
+  /* Link styling */
+  .prose a {
+    @apply text-blue-400 no-underline hover:underline;
+  }
+
+  /* Blockquote styling */
+  .prose blockquote {
+    @apply border-l-4 border-blue-400 pl-4 italic;
+  }
+}
