@@ -4,6 +4,7 @@ import { defineCollection, z } from "astro:content";
 const contentSchema = z.object({
   title: z.string(),
   description: z.string(),
+  abstract: z.string().optional(), // Short summary for preview (3-4 lines)
   date: z.coerce.date(),
   tags: z.array(z.string()).default([]),
   draft: z.boolean().default(false),

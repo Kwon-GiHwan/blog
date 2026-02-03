@@ -2,77 +2,45 @@
 import { getCollection } from 'astro:content';
 import SidebarLayout from '@layouts/SidebarLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
-import { filterDrafts, sortByDate, paginate } from '@utils/index';
+import SearchFilter from '@components/SearchFilter';
+import { filterDrafts, sortByDate, getAllTags } from '@utils/index';
 
 const allProjects = await getCollection('projects');
 const publishedProjects = sortByDate(filterDrafts(allProjects));
 
-const POSTS_PER_PAGE = 12; // Increased for high-density grid
-const paginatedPosts = paginate(publishedProjects, POSTS_PER_PAGE);
+// Get all tags from projects
+const allTags = getAllTags(publishedProjects);
 
-// Get current page from URL params (default to 1)
-const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
-const pageData = paginatedPosts.find(p => p.page === currentPage) || paginatedPosts[0];
-
-const totalPages = paginatedPosts.length;
+// Format posts for SearchFilter component (including raw content)
+const formattedPosts = await Promise.all(
+  publishedProjects.map(async (project) => {
+    const { Content } = await project.render();
+    return {
+      slug: project.slug,
+      title: project.data.title,
+      description: project.data.description,
+      date: project.data.date.toISOString(),
+      tags: project.data.tags,
+      image: project.data.image,
+      imageAlt: project.data.imageAlt,
+      content: project.body, // Raw markdown content for searching
+    };
+  })
+);
 ---
 
 <SidebarLayout title="All Projects" description="Browse all my projects" maxWidth="wide">
   <div class="mb-10">
     <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">All Projects</h1>
     <p class="text-gray-600 text-base">
-      {publishedProjects.length} {publishedProjects.length === 1 ? 'project' : 'projects'} in total
+      Browse and search through all my projects
     </p>
   </div>
 
-  {pageData ? (
-    <>
-      {/* High-Density Grid: 1 col (mobile), 2 cols (tablet), 3 cols (desktop), 4 cols (XL) */}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-        {pageData.data.map(project => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <nav class="flex justify-center gap-2" aria-label="Pagination">
-          {currentPage > 1 && (
-            <a
-              href={`/projects?page=${currentPage - 1}`}
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors text-sm font-medium bg-white"
-            >
-              ← Previous
-            </a>
-          )}
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <a
-              href={`/projects?page=${page}`}
-              class={`px-4 py-2 border rounded-lg transition-colors text-sm font-medium ${
-                page === currentPage
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                  : 'border-gray-300 hover:border-blue-600 hover:text-blue-600 bg-white'
-              }`}
-            >
-              {page}
-            </a>
-          ))}
-
-          {currentPage < totalPages && (
-            <a
-              href={`/projects?page=${currentPage + 1}`}
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors text-sm font-medium bg-white"
-            >
-              Next →
-            </a>
-          )}
-        </nav>
-      )}
-    </>
-  ) : (
-    <div class="text-center py-20 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-      <p class="text-gray-600 text-base font-medium">No projects found.</p>
-    </div>
-  )}
+  <SearchFilter
+    client:load
+    posts={formattedPosts}
+    allTags={allTags}
+    collection="projects"
+  />
 </SidebarLayout>

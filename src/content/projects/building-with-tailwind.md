@@ -1,6 +1,7 @@
 ---
 title: "Building Modern UIs with Tailwind CSS"
 description: "A deep dive into Tailwind CSS and how to leverage utility-first styling for rapid development."
+abstract: "Discover how Tailwind CSS revolutionizes UI development with its utility-first approach. This article covers responsive design patterns, custom theme configuration, and best practices for scaling Tailwind in production applications. Learn to build beautiful, maintainable interfaces without writing custom CSS."
 date: 2026-01-28
 tags: ["tailwind", "css", "web-dev"]
 draft: false

@@ -1,19 +1,53 @@
 ---
 import { getCollection } from 'astro:content';
 import SidebarLayout from '@layouts/SidebarLayout.astro';
-import ProjectCard from '@components/ProjectCard.astro';
-import ResearchCard from '@components/ResearchCard.astro';
+import FeaturedSplitView from '@components/FeaturedSplitView';
+import ExperienceTimeline from '@components/ExperienceTimeline.astro';
+import SkillsFilter from '@components/SkillsFilter';
 import { filterDrafts, sortByDate } from '@utils/index';
 
-// Get projects
+// Get all content (projects + research)
 const allProjects = await getCollection('projects');
-const publishedProjects = sortByDate(filterDrafts(allProjects));
-const featuredProjects = publishedProjects.slice(0, 3);
-
-// Get research
 const allResearch = await getCollection('research');
-const publishedResearch = sortByDate(filterDrafts(allResearch));
-const featuredResearch = publishedResearch.slice(0, 3);
+const allContent = [...filterDrafts(allProjects), ...filterDrafts(allResearch)];
+
+// Format for Split View (top 8 posts)
+const splitViewPosts = sortByDate(allContent)
+  .slice(0, 8)
+  .map(post => ({
+    slug: post.slug,
+    title: post.data.title,
+    description: post.data.description,
+    abstract: post.data.abstract || post.data.description,
+    date: post.data.date.toISOString(),
+    image: post.data.image,
+    imageAlt: post.data.imageAlt,
+    tags: post.data.tags,
+    collection: post.collection as 'projects' | 'research',
+  }));
+
+// Get experiences
+const experiences = await getCollection('experiences');
+const publishedExperiences = experiences.filter(exp =>
+  import.meta.env.DEV || !exp.data.draft
+);
+
+// Extract all unique skills from experiences
+const allSkillsFromExperiences = [
+  ...new Set(
+    publishedExperiences.flatMap(exp => exp.data.skills)
+  )
+].sort();
+
+// Format posts for the filter component
+const formattedPosts = allContent.map(item => ({
+  slug: item.slug,
+  title: item.data.title,
+  description: item.data.description,
+  tags: item.data.tags,
+  date: item.data.date.toISOString(),
+  collection: item.collection as 'projects' | 'research',
+}));
 ---
 
 <SidebarLayout
@@ -32,58 +66,15 @@ const featuredResearch = publishedResearch.slice(0, 3);
     </p>
   </section>
 
-  <!-- Featured Projects -->
-  {featuredProjects.length > 0 && (
+  <!-- Featured Split View Section -->
+  {splitViewPosts.length > 0 ? (
     <section class="mb-20">
-      <div class="flex items-center justify-between mb-10">
-        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
-          Featured Projects
-        </h2>
-        <a
-          href="/projects"
-          class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors inline-flex items-center gap-1 group"
-        >
-          View all
-          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {featuredProjects.map(project => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 tracking-tight">
+        Featured Projects & Research
+      </h2>
+      <FeaturedSplitView client:load posts={splitViewPosts} />
     </section>
-  )}
-
-  <!-- Featured Research -->
-  {featuredResearch.length > 0 && (
-    <section>
-      <div class="flex items-center justify-between mb-10">
-        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
-          Recent Research
-        </h2>
-        <a
-          href="/research"
-          class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors inline-flex items-center gap-1 group"
-        >
-          View all
-          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-          </svg>
-        </a>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {featuredResearch.map(research => (
-          <ResearchCard research={research} />
-        ))}
-      </div>
-    </section>
-  )}
-
-  <!-- Empty State -->
-  {publishedProjects.length === 0 && publishedResearch.length === 0 && (
+  ) : (
     <div class="text-center py-20 border border-dashed border-gray-300 rounded-lg bg-gray-50">
       <p class="text-gray-600 text-lg mb-3 font-medium">
         No content yet
@@ -92,5 +83,29 @@ const featuredResearch = publishedResearch.slice(0, 3);
         Start by creating markdown files in <code class="text-pink-600 bg-white px-2 py-1 rounded font-mono text-xs">src/content/projects/</code> or <code class="text-pink-600 bg-white px-2 py-1 rounded font-mono text-xs">src/content/research/</code>
       </p>
     </div>
+  )}
+
+  <!-- Experience Timeline Section -->
+  {publishedExperiences.length > 0 && (
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 tracking-tight">
+        Work Experience
+      </h2>
+      <ExperienceTimeline />
+    </section>
+  )}
+
+  <!-- Skills & Evidence Section -->
+  {allSkillsFromExperiences.length > 0 && (
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold text-gray-900 mb-8 tracking-tight">
+        Skills & Evidence
+      </h2>
+      <SkillsFilter
+        client:load
+        allPosts={formattedPosts}
+        allSkills={allSkillsFromExperiences}
+      />
+    </section>
   )}
 </SidebarLayout>

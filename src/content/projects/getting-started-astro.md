@@ -1,6 +1,7 @@
 ---
 title: "Getting Started with Astro and TypeScript"
 description: "Learn how to build blazing-fast static sites with Astro's content collections and TypeScript for full type safety."
+abstract: "This comprehensive guide explores Astro's innovative approach to modern web development, focusing on zero-JavaScript defaults, component islands, and content-first architecture. We demonstrate practical patterns for building type-safe static sites with Content Collections and TypeScript, achieving optimal performance without sacrificing developer experience."
 date: 2026-02-02
 tags: ["astro", "typescript", "web-dev"]
 draft: false

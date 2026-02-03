@@ -2,77 +2,45 @@
 import { getCollection } from 'astro:content';
 import SidebarLayout from '@layouts/SidebarLayout.astro';
 import ResearchCard from '@components/ResearchCard.astro';
-import { filterDrafts, sortByDate, paginate } from '@utils/index';
+import SearchFilter from '@components/SearchFilter';
+import { filterDrafts, sortByDate, getAllTags } from '@utils/index';
 
 const allResearch = await getCollection('research');
 const publishedResearch = sortByDate(filterDrafts(allResearch));
 
-const POSTS_PER_PAGE = 12; // Increased for high-density grid
-const paginatedPosts = paginate(publishedResearch, POSTS_PER_PAGE);
+// Get all tags from research
+const allTags = getAllTags(publishedResearch);
 
-// Get current page from URL params (default to 1)
-const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
-const pageData = paginatedPosts.find(p => p.page === currentPage) || paginatedPosts[0];
-
-const totalPages = paginatedPosts.length;
+// Format posts for SearchFilter component (including raw content)
+const formattedPosts = await Promise.all(
+  publishedResearch.map(async (research) => {
+    const { Content } = await research.render();
+    return {
+      slug: research.slug,
+      title: research.data.title,
+      description: research.data.description,
+      date: research.data.date.toISOString(),
+      tags: research.data.tags,
+      image: research.data.image,
+      imageAlt: research.data.imageAlt,
+      content: research.body, // Raw markdown content for searching
+    };
+  })
+);
 ---
 
 <SidebarLayout title="All Research" description="Browse all my research" maxWidth="wide">
   <div class="mb-10">
     <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">Research</h1>
     <p class="text-gray-600 text-base">
-      {publishedResearch.length} {publishedResearch.length === 1 ? 'publication' : 'publications'} in total
+      Browse and search through all my research publications
     </p>
   </div>
 
-  {pageData ? (
-    <>
-      {/* High-Density Grid: 1 col (mobile), 2 cols (tablet), 3 cols (desktop), 4 cols (XL) */}
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
-        {pageData.data.map(research => (
-          <ResearchCard research={research} />
-        ))}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <nav class="flex justify-center gap-2" aria-label="Pagination">
-          {currentPage > 1 && (
-            <a
-              href={`/research?page=${currentPage - 1}`}
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors text-sm font-medium bg-white"
-            >
-              ← Previous
-            </a>
-          )}
-
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-            <a
-              href={`/research?page=${page}`}
-              class={`px-4 py-2 border rounded-lg transition-colors text-sm font-medium ${
-                page === currentPage
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                  : 'border-gray-300 hover:border-blue-600 hover:text-blue-600 bg-white'
-              }`}
-            >
-              {page}
-            </a>
-          ))}
-
-          {currentPage < totalPages && (
-            <a
-              href={`/research?page=${currentPage + 1}`}
-              class="px-4 py-2 border border-gray-300 rounded-lg hover:border-blue-600 hover:text-blue-600 transition-colors text-sm font-medium bg-white"
-            >
-              Next →
-            </a>
-          )}
-        </nav>
-      )}
-    </>
-  ) : (
-    <div class="text-center py-20 border border-dashed border-gray-300 rounded-lg bg-gray-50">
-      <p class="text-gray-600 text-base font-medium">No research publications yet.</p>
-    </div>
-  )}
+  <SearchFilter
+    client:load
+    posts={formattedPosts}
+    allTags={allTags}
+    collection="research"
+  />
 </SidebarLayout>

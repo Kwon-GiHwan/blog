@@ -1,12 +1,32 @@
 ---
 // Sidebar navigation component
+import { getCollection } from 'astro:content';
+import { filterDrafts, getAllTags } from '@utils/index';
+import ProfileImage from '@components/ProfileImage';
+
 const currentPath = Astro.url.pathname;
+
+// Fetch projects and research to get tags
+const projects = await getCollection('projects');
+const research = await getCollection('research');
+
+const projectTags = getAllTags(filterDrafts(projects));
+const researchTags = getAllTags(filterDrafts(research));
 
 const navItems = [
   { href: '/', label: 'Home', icon: 'home' },
-  { href: '/experience', label: 'Experience', icon: 'briefcase' },
-  { href: '/projects', label: 'Projects', icon: 'folder' },
-  { href: '/research', label: 'Research', icon: 'book' },
+  {
+    href: '/projects',
+    label: 'Projects',
+    icon: 'folder',
+    submenu: projectTags.map(tag => ({ href: `/tags/${tag}`, label: tag }))
+  },
+  {
+    href: '/research',
+    label: 'Research',
+    icon: 'book',
+    submenu: researchTags.map(tag => ({ href: `/tags/${tag}`, label: tag }))
+  },
 ];
 
 function isActive(href: string, current: string): boolean {
@@ -26,11 +46,9 @@ function isActive(href: string, current: string): boolean {
     </a>
   </div>
 
-  <!-- Bio -->
+  <!-- Profile Image -->
   <div class="mb-10 pb-8 border-b border-gray-200">
-    <p class="text-sm text-gray-600 leading-relaxed">
-      Software developer passionate about building elegant solutions to complex problems.
-    </p>
+    <ProfileImage client:load />
   </div>
 
   <!-- Navigation with enhanced active states -->
@@ -63,6 +81,28 @@ function isActive(href: string, current: string): boolean {
               </svg>
             )}
           </a>
+
+          <!-- Submenu (Tags) -->
+          {item.submenu && item.submenu.length > 0 && (
+            <ul class="mt-1 ml-4 space-y-1">
+              {item.submenu.map(subItem => (
+                <li>
+                  <a
+                    href={subItem.href}
+                    class={`
+                      block px-4 py-1.5 rounded-md text-xs transition-all
+                      ${currentPath === subItem.href || currentPath.startsWith(subItem.href)
+                        ? 'text-blue-600 bg-blue-50 font-medium'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      }
+                    `}
+                  >
+                    <span class="opacity-60">#</span>{subItem.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </li>
       ))}
     </ul>
