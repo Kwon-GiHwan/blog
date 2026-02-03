@@ -17,16 +17,16 @@ const researchTags = getAllTags(filterDrafts(research));
 const navItems = [
   { href: `${base}`, label: 'Home', icon: 'home' },
   {
-    href: `${base}projects`,
+    href: `${base}projects/`,
     label: 'Projects',
     icon: 'folder',
-    submenu: projectTags.map(tag => ({ href: `${base}tags/${tag}`, label: tag }))
+    submenu: projectTags.map(tag => ({ href: `${base}tags/${tag}/`, label: tag }))
   },
   {
-    href: `${base}research`,
+    href: `${base}research/`,
     label: 'Research',
     icon: 'book',
-    submenu: researchTags.map(tag => ({ href: `${base}tags/${tag}`, label: tag }))
+    submenu: researchTags.map(tag => ({ href: `${base}tags/${tag}/`, label: tag }))
   },
 ];
 

@@ -84,7 +84,7 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
               {filteredPosts.map((post) => (
                 <a
                   key={post.slug}
-                  href={`/blog/${post.collection}/${post.slug}`}
+                  href={`/blog/${post.collection}/${post.slug}/`}
                   class="block p-5 bg-white border border-gray-200 rounded-lg hover:border-blue-600 hover:shadow-md transition-all group"
                 >
                   <div class="flex items-start justify-between mb-2">
