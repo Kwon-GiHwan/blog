@@ -5,7 +5,8 @@ import { filterDrafts, getAllTags } from '@utils/index';
 import ProfileImage from '@components/ProfileImage';
 
 const currentPath = Astro.url.pathname;
-const base = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
 
 // Fetch projects and research to get tags
 const projects = await getCollection('projects');

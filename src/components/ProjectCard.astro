@@ -12,7 +12,8 @@ const { title, description, date, tags, image, imageAlt } = project.data;
 // Default placeholder if no image
 const displayImage = image || `https://placehold.co/800x450/e5e7eb/6b7280?text=${encodeURIComponent(title)}`;
 const displayAlt = imageAlt || `${title} thumbnail`;
-const base = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
+const base = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
 ---
 
 <article class="group h-full">
