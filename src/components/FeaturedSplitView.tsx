@@ -208,8 +208,8 @@ export default function FeaturedSplitView({ posts }: Props) {
             ))}
           </div>
 
-          {/* Right: Preview */}
-          <div class="lg:sticky lg:top-8 lg:self-start h-[600px]">
+          {/* Right: Preview (Hidden on mobile) */}
+          <div class="hidden lg:block lg:sticky lg:top-8 lg:self-start h-[600px]">
             <a
               key={selectedPost.slug}
               href={`/blog/${selectedPost.collection}/${selectedPost.slug}/`}
