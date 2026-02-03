@@ -188,7 +188,7 @@ export default function SearchFilter({ posts, allTags, collection }: Props) {
           {filteredPosts.map((post) => (
             <a
               key={post.slug}
-              href={`/${collection}/${post.slug}`}
+              href={`/blog/${collection}/${post.slug}`}
               class="block border border-gray-200 rounded-xl overflow-hidden bg-white hover:shadow-lg transition-all"
             >
               {post.image && (

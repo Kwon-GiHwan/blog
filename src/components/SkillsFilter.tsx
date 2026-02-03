@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'preact/hooks';
+import { useState, useMemo } from "preact/hooks";
 
 interface Post {
   slug: string;
@@ -6,7 +6,7 @@ interface Post {
   description: string;
   tags: string[];
   date: string;
-  collection: 'projects' | 'research';
+  collection: "projects" | "research";
 }
 
 interface Props {
@@ -20,9 +20,9 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
   // Calculate skill counts
   const skillCounts = useMemo(() => {
     const counts: Record<string, number> = {};
-    allSkills.forEach(skill => {
-      counts[skill] = allPosts.filter(post =>
-        post.tags.includes(skill)
+    allSkills.forEach((skill) => {
+      counts[skill] = allPosts.filter((post) =>
+        post.tags.includes(skill),
       ).length;
     });
     return counts;
@@ -31,7 +31,7 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
   // Filter posts by selected skill
   const filteredPosts = useMemo(() => {
     if (!selectedSkill) return [];
-    return allPosts.filter(post => post.tags.includes(selectedSkill));
+    return allPosts.filter((post) => post.tags.includes(selectedSkill));
   }, [selectedSkill, allPosts]);
 
   return (
@@ -42,19 +42,23 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
           Skills & Technologies
         </h3>
         <div class="flex flex-wrap gap-3">
-          {allSkills.map(skill => (
+          {allSkills.map((skill) => (
             <button
               key={skill}
-              onClick={() => setSelectedSkill(skill === selectedSkill ? null : skill)}
+              onClick={() =>
+                setSelectedSkill(skill === selectedSkill ? null : skill)
+              }
               class={`
                 px-4 py-2 rounded-lg text-sm font-medium transition-all
-                ${selectedSkill === skill
-                  ? 'bg-blue-600 text-white shadow-md scale-105'
-                  : 'bg-white border border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600'
+                ${
+                  selectedSkill === skill
+                    ? "bg-blue-600 text-white shadow-md scale-105"
+                    : "bg-white border border-gray-300 text-gray-700 hover:border-blue-600 hover:text-blue-600"
                 }
               `}
             >
-              {skill} <span class="text-xs opacity-75">({skillCounts[skill]})</span>
+              {skill}{" "}
+              <span class="text-xs opacity-75">({skillCounts[skill]})</span>
             </button>
           ))}
         </div>
@@ -77,10 +81,10 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
 
           {filteredPosts.length > 0 ? (
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {filteredPosts.map(post => (
+              {filteredPosts.map((post) => (
                 <a
                   key={post.slug}
-                  href={`/${post.collection}/${post.slug}`}
+                  href={`/blog/${post.collection}/${post.slug}`}
                   class="block p-5 bg-white border border-gray-200 rounded-lg hover:border-blue-600 hover:shadow-md transition-all group"
                 >
                   <div class="flex items-start justify-between mb-2">
@@ -95,13 +99,13 @@ export default function SkillsFilter({ allPosts, allSkills }: Props) {
                     {post.description}
                   </p>
                   <div class="flex flex-wrap gap-1.5">
-                    {post.tags.map(tag => (
+                    {post.tags.map((tag) => (
                       <span
                         key={tag}
                         class={`text-xs px-2 py-1 rounded-full ${
                           tag === selectedSkill
-                            ? 'bg-blue-100 text-blue-700 font-semibold'
-                            : 'bg-gray-100 text-gray-600'
+                            ? "bg-blue-100 text-blue-700 font-semibold"
+                            : "bg-gray-100 text-gray-600"
                         }`}
                       >
                         {tag}

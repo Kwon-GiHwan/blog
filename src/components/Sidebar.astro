@@ -5,6 +5,7 @@ import { filterDrafts, getAllTags } from '@utils/index';
 import ProfileImage from '@components/ProfileImage';
 
 const currentPath = Astro.url.pathname;
+const base = import.meta.env.BASE_URL;
 
 // Fetch projects and research to get tags
 const projects = await getCollection('projects');
@@ -14,31 +15,37 @@ const projectTags = getAllTags(filterDrafts(projects));
 const researchTags = getAllTags(filterDrafts(research));
 
 const navItems = [
-  { href: '/', label: 'Home', icon: 'home' },
+  { href: `${base}`, label: 'Home', icon: 'home' },
   {
-    href: '/projects',
+    href: `${base}projects`,
     label: 'Projects',
     icon: 'folder',
-    submenu: projectTags.map(tag => ({ href: `/tags/${tag}`, label: tag }))
+    submenu: projectTags.map(tag => ({ href: `${base}tags/${tag}`, label: tag }))
   },
   {
-    href: '/research',
+    href: `${base}research`,
     label: 'Research',
     icon: 'book',
-    submenu: researchTags.map(tag => ({ href: `/tags/${tag}`, label: tag }))
+    submenu: researchTags.map(tag => ({ href: `${base}tags/${tag}`, label: tag }))
   },
 ];
 
 function isActive(href: string, current: string): boolean {
-  if (href === '/') return current === '/';
-  return current.startsWith(href);
+  // Normalize paths for comparison
+  const normalizedHref = href.endsWith('/') ? href.slice(0, -1) : href;
+  const normalizedCurrent = current.endsWith('/') ? current.slice(0, -1) : current;
+
+  if (normalizedHref === base || normalizedHref === base.slice(0, -1)) {
+    return normalizedCurrent === base || normalizedCurrent === base.slice(0, -1);
+  }
+  return normalizedCurrent.startsWith(normalizedHref);
 }
 ---
 
 <div class="flex flex-col h-full p-8 overflow-y-auto">
   <!-- Logo / Name -->
   <div class="mb-10">
-    <a href="/" class="block group">
+    <a href={base} class="block group">
       <h1 class="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
         Your Name
       </h1>
