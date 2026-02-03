@@ -1,0 +1,77 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import Sidebar from '@components/Sidebar.astro';
+import MobileNav from '@components/MobileNav.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  maxWidth?: 'reading' | 'article' | 'gallery' | 'wide';
+}
+
+const { title, description = 'A clean portfolio showcasing projects and research', maxWidth = 'reading' } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// Define max-width classes based on content type
+const maxWidthClasses = {
+  reading: 'max-w-3xl',  // ~768px - optimal for reading
+  article: 'max-w-5xl',  // ~1024px - wider article layout (1.5x reading)
+  gallery: 'max-w-6xl',  // ~1152px - for card grids
+  wide: 'max-w-7xl',     // ~1280px - for wider layouts
+};
+
+const containerClass = maxWidthClasses[maxWidth];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="canonical" href={canonicalURL} />
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <ViewTransitions />
+  </head>
+  <body class="bg-white text-gray-800">
+    <!-- Desktop Sidebar (hidden on mobile) - Fixed position -->
+    <div class="hidden lg:block">
+      <aside class="fixed top-0 left-0 h-full w-64 border-r border-gray-200 bg-white z-50">
+        <Sidebar />
+      </aside>
+    </div>
+
+    <!-- Mobile Navigation (hidden on desktop) -->
+    <MobileNav />
+
+    <!-- Main Content Wrapper - This is the KEY fix -->
+    <!-- ml-64 clears sidebar, flex with items-center centers content horizontally -->
+    <div class="lg:ml-64 w-full lg:w-auto min-h-screen flex flex-col items-center bg-white pt-16 lg:pt-0">
+
+      <!-- Inner Content Container - This gets centered -->
+      <div class={`w-full ${containerClass} px-6 sm:px-8 lg:px-12 py-12 flex-1 flex flex-col`}>
+        <slot />
+      </div>
+
+      <!-- Footer - also centered within the same width -->
+      <footer class="border-t border-gray-200 w-full">
+        <div class={`w-full ${containerClass} px-6 sm:px-8 lg:px-12 py-8 mx-auto`}>
+          <div class="text-center text-gray-500 text-sm">
+            <p>&copy; {new Date().getFullYear()} Your Name. Built with Astro.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

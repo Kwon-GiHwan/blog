@@ -65,7 +65,7 @@ Update `astro.config.mjs`:
 ```javascript
 export default defineConfig({
   site: 'https://YOUR_USERNAME.github.io',
-  base: '/blog', // Match your repo name
+  // base: '/blog', // Optional: Uncomment if deploying to a subdirectory
   // ...
 });
 ```
@@ -76,7 +76,7 @@ export default defineConfig({
 npm run dev
 ```
 
-Visit `http://localhost:4321/blog`
+Visit `http://localhost:4321`
 
 ### 4. Build
 

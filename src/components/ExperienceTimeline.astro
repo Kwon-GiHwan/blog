@@ -1,0 +1,61 @@
+---
+import { getCollection } from 'astro:content';
+
+const experiences = await getCollection('experiences');
+const published = experiences
+  .filter(exp => import.meta.env.DEV || !exp.data.draft)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="space-y-12">
+  {published.map((exp, index) => (
+    <article class="relative pl-8 pb-12 border-l-2 border-gray-200 last:pb-0">
+      {/* Timeline Dot */}
+      <div class="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-blue-600 border-4 border-white"></div>
+
+      {/* Company & Role */}
+      <div class="mb-4">
+        <h3 class="text-2xl font-bold text-gray-900">{exp.data.company}</h3>
+        <p class="text-lg text-blue-600 font-medium mt-1">{exp.data.role}</p>
+        <p class="text-sm text-gray-500 mt-1">{exp.data.period}</p>
+      </div>
+
+      {/* Summary */}
+      <p class="text-gray-700 leading-relaxed mb-6">{exp.data.summary}</p>
+
+      {/* Skills Pills */}
+      <div class="flex flex-wrap gap-2 mb-6">
+        {exp.data.skills.map(skill => (
+          <span class="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded-full">
+            {skill}
+          </span>
+        ))}
+      </div>
+
+      {/* Key Projects */}
+      {exp.data.keyProjects.length > 0 && (
+        <div class="mt-6 bg-gray-50 rounded-lg p-6 border border-gray-200">
+          <h4 class="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">
+            Key Projects
+          </h4>
+          <ul class="space-y-3">
+            {exp.data.keyProjects.map(project => (
+              <li class="flex items-start gap-2">
+                <span class="text-blue-600 mt-1">•</span>
+                <div class="flex-1">
+                  <span class="inline-block px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded mr-2">
+                    {project.category}
+                  </span>
+                  <span class="text-gray-900 font-medium">{project.name}</span>
+                  <span class="text-gray-500 text-sm ml-2">
+                    ({project.techStack.join(', ')})
+                  </span>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </article>
+  ))}
+</section>

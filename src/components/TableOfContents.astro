@@ -9,15 +9,15 @@ const { items } = Astro.props;
 ---
 
 <nav class="toc sticky top-8" aria-label="Table of Contents">
-  <h2 class="text-sm font-semibold text-white mb-4 uppercase tracking-wide">
+  <h2 class="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">
     On This Page
   </h2>
-  <ul class="space-y-2 text-sm border-l-2 border-dark-border">
+  <ul class="space-y-2 text-sm border-l-2 border-gray-200">
     {items.map(item => (
       <li class={item.depth === 3 ? 'ml-4' : ''}>
         <a
           href={`#${item.slug}`}
-          class="toc-link block py-1 px-3 text-dark-muted hover:text-white hover:border-l-2 hover:border-blue-400 transition-colors -ml-[2px]"
+          class="toc-link block py-1 px-3 text-gray-600 hover:text-gray-900 hover:border-l-2 hover:border-blue-600 transition-colors -ml-[2px]"
           data-target={item.slug}
         >
           {item.text}
@@ -43,9 +43,9 @@ const { items } = Astro.props;
     });
 
     tocLinks.forEach(link => {
-      link.classList.remove('text-blue-400', 'border-blue-400');
+      link.classList.remove('text-blue-600', 'border-blue-600', 'font-medium');
       if (link.getAttribute('data-target') === current) {
-        link.classList.add('text-blue-400', 'border-blue-400');
+        link.classList.add('text-blue-600', 'border-blue-600', 'font-medium');
       }
     });
   }
@@ -58,5 +58,23 @@ const { items } = Astro.props;
   .toc {
     max-height: calc(100vh - 4rem);
     overflow-y: auto;
+  }
+
+  /* Custom scrollbar */
+  .toc::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .toc::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .toc::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 2px;
+  }
+
+  .toc::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
   }
 </style>

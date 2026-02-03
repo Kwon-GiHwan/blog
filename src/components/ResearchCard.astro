@@ -3,11 +3,11 @@ import type { CollectionEntry } from 'astro:content';
 import { formatDate } from '@utils/index';
 
 interface Props {
-  project: CollectionEntry<'projects'>;
+  research: CollectionEntry<'research'>;
 }
 
-const { project } = Astro.props;
-const { title, description, date, tags, image, imageAlt } = project.data;
+const { research } = Astro.props;
+const { title, description, date, tags, image, imageAlt } = research.data;
 
 // Default placeholder if no image
 const displayImage = image || `https://placehold.co/800x450/e5e7eb/6b7280?text=${encodeURIComponent(title)}`;
@@ -16,7 +16,7 @@ const displayAlt = imageAlt || `${title} thumbnail`;
 
 <article class="group h-full">
   <a
-    href={`/projects/${project.slug}`}
+    href={`/research/${research.slug}`}
     class="block h-full border border-gray-100 rounded-lg overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300 bg-white"
   >
     <!-- Compact Image Thumbnail -->

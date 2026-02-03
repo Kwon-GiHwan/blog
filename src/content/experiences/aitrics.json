@@ -1,0 +1,26 @@
+{
+  "company": "AITRICS",
+  "role": "Backend Engineer (AI Model Serving)",
+  "period": "2023.01 - Present",
+  "summary": "의료 AI 모델 서빙 최적화 및 인프라 구축. 대규모 트래픽 환경에서 추론 성능 개선 및 GPU 리소스 최적화.",
+  "skills": ["Python", "vLLM", "Triton Inference Server", "Kubernetes", "CUDA", "OpenTelemetry", "Ray"],
+  "keyProjects": [
+    {
+      "category": "Optimization",
+      "name": "대규모 트래픽 환경에서의 vLLM 추론 지연 시간 단축",
+      "techStack": ["Python", "vLLM", "Ray"]
+    },
+    {
+      "category": "Infrastructure",
+      "name": "Kubernetes 기반 AI 모델 서빙 플랫폼 구축",
+      "techStack": ["Kubernetes", "Triton Inference Server", "CUDA"]
+    },
+    {
+      "category": "Monitoring",
+      "name": "OpenTelemetry 기반 분산 추적 시스템 구현",
+      "techStack": ["OpenTelemetry", "Python", "Kubernetes"]
+    }
+  ],
+  "order": 1,
+  "draft": false
+}

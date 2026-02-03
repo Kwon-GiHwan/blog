@@ -1,39 +1,55 @@
 ---
 import { getCollection } from 'astro:content';
-import Base from '@layouts/Base.astro';
+import SidebarLayout from '@layouts/SidebarLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
+import ResearchCard from '@components/ResearchCard.astro';
 import { filterDrafts, sortByDate } from '@utils/index';
 
+// Get projects
 const allProjects = await getCollection('projects');
 const publishedProjects = sortByDate(filterDrafts(allProjects));
-
-// Featured: first 3 posts
 const featuredProjects = publishedProjects.slice(0, 3);
 
-// Recent: next 6 posts
-const recentProjects = publishedProjects.slice(3, 9);
+// Get research
+const allResearch = await getCollection('research');
+const publishedResearch = sortByDate(filterDrafts(allResearch));
+const featuredResearch = publishedResearch.slice(0, 3);
 ---
 
-<Base title="Home - Developer Portfolio" description="Welcome to my developer portfolio and blog">
-  <!-- Hero Section -->
-  <section class="mb-16">
-    <h1 class="text-5xl font-bold text-white mb-4">
-      Hi, I'm <span class="text-blue-400">Your Name</span>
+<SidebarLayout
+  title="Home - Your Name"
+  description="Portfolio showcasing projects and research in software development"
+  maxWidth="wide"
+>
+  <!-- Hero Section with optimal reading width -->
+  <section class="mb-20">
+    <h1 class="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+      Hi, I'm <span class="text-blue-600">Your Name</span>
     </h1>
-    <p class="text-xl text-dark-muted max-w-2xl leading-relaxed">
+    <p class="text-xl text-gray-600 max-w-2xl leading-relaxed">
       Software developer passionate about building elegant solutions to complex problems.
-      I write about web development, TypeScript, and modern frontend architectures.
+      I work at the intersection of design and engineering, creating experiences that matter.
     </p>
   </section>
 
   <!-- Featured Projects -->
   {featuredProjects.length > 0 && (
-    <section class="mb-16">
-      <h2 class="text-3xl font-bold text-white mb-8 flex items-center">
-        <span class="w-2 h-8 bg-blue-400 mr-4"></span>
-        Featured Projects
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section class="mb-20">
+      <div class="flex items-center justify-between mb-10">
+        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
+          Featured Projects
+        </h2>
+        <a
+          href="/projects"
+          class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors inline-flex items-center gap-1 group"
+        >
+          View all
+          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {featuredProjects.map(project => (
           <ProjectCard project={project} />
         ))}
@@ -41,35 +57,40 @@ const recentProjects = publishedProjects.slice(3, 9);
     </section>
   )}
 
-  <!-- Recent Projects -->
-  {recentProjects.length > 0 && (
+  <!-- Featured Research -->
+  {featuredResearch.length > 0 && (
     <section>
-      <h2 class="text-3xl font-bold text-white mb-8 flex items-center">
-        <span class="w-2 h-8 bg-blue-400 mr-4"></span>
-        Recent Projects
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {recentProjects.map(project => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-      <div class="mt-8 text-center">
+      <div class="flex items-center justify-between mb-10">
+        <h2 class="text-3xl font-bold text-gray-900 tracking-tight">
+          Recent Research
+        </h2>
         <a
-          href="/projects"
-          class="inline-block px-6 py-3 bg-blue-400 text-dark-bg font-semibold rounded-lg hover:bg-blue-500 transition-colors"
+          href="/research"
+          class="text-blue-600 hover:text-blue-700 font-medium text-sm transition-colors inline-flex items-center gap-1 group"
         >
-          View All Projects →
+          View all
+          <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
         </a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {featuredResearch.map(research => (
+          <ResearchCard research={research} />
+        ))}
       </div>
     </section>
   )}
 
   <!-- Empty State -->
-  {publishedProjects.length === 0 && (
-    <div class="text-center py-16 border border-dashed border-dark-border rounded-lg">
-      <p class="text-dark-muted text-lg">
-        No projects yet. Start by creating markdown files in <code class="text-pink-400">src/content/projects/</code>
+  {publishedProjects.length === 0 && publishedResearch.length === 0 && (
+    <div class="text-center py-20 border border-dashed border-gray-300 rounded-lg bg-gray-50">
+      <p class="text-gray-600 text-lg mb-3 font-medium">
+        No content yet
+      </p>
+      <p class="text-gray-500 text-sm max-w-md mx-auto leading-relaxed">
+        Start by creating markdown files in <code class="text-pink-600 bg-white px-2 py-1 rounded font-mono text-xs">src/content/projects/</code> or <code class="text-pink-600 bg-white px-2 py-1 rounded font-mono text-xs">src/content/research/</code>
       </p>
     </div>
   )}
-</Base>
+</SidebarLayout>

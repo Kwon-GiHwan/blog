@@ -4,6 +4,8 @@ description: "A deep dive into Tailwind CSS and how to leverage utility-first st
 date: 2026-01-28
 tags: ["tailwind", "css", "web-dev"]
 draft: false
+image: "/images/projects/tailwind.svg"
+imageAlt: "Tailwind CSS utility-first framework"
 ---
 
 ## Why Tailwind CSS?

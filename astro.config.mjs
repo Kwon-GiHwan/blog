@@ -1,20 +1,22 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
+import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
   site: "https://YOUR_USERNAME.github.io",
-  base: "/blog", // Update to match your repo name (or remove if using username.github.io)
+  // base: "/blog", // Removed - using root path
   integrations: [
     tailwind({
       applyBaseStyles: false, // We'll use custom base styles
     }),
     mdx(),
+    preact(),
   ],
   markdown: {
     shikiConfig: {
-      theme: "dracula", // Or 'github-dark'
+      theme: "github-light", // Changed from 'dracula'
       wrap: true,
     },
   },

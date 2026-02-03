@@ -4,21 +4,21 @@ import ContentLayout from '@layouts/ContentLayout.astro';
 import { filterDrafts } from '@utils/index';
 
 export async function getStaticPaths() {
-  const allProjects = await getCollection('projects');
-  const publishedProjects = filterDrafts(allProjects);
+  const allResearch = await getCollection('research');
+  const publishedResearch = filterDrafts(allResearch);
 
-  return publishedProjects.map(project => ({
-    params: { slug: project.slug },
-    props: { project },
+  return publishedResearch.map(research => ({
+    params: { slug: research.slug },
+    props: { research },
   }));
 }
 
-const { project } = Astro.props;
-const { Content } = await project.render();
-const { title, description, date, tags } = project.data;
+const { research } = Astro.props;
+const { Content } = await research.render();
+const { title, description, date, tags } = research.data;
 
 // Get raw content for reading time and TOC
-const rawContent = project.body;
+const rawContent = research.body;
 ---
 
 <ContentLayout

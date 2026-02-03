@@ -1,0 +1,71 @@
+---
+import { getCollection } from 'astro:content';
+import SidebarLayout from '@layouts/SidebarLayout.astro';
+import ExperienceTimeline from '@components/ExperienceTimeline.astro';
+import SkillsFilter from '@components/SkillsFilter';
+import { filterDrafts } from '@utils/index';
+
+// Get all experiences
+const experiences = await getCollection('experiences');
+const publishedExperiences = experiences.filter(exp =>
+  import.meta.env.DEV || !exp.data.draft
+);
+
+// Extract all unique skills from experiences
+const allSkillsFromExperiences = [
+  ...new Set(
+    publishedExperiences.flatMap(exp => exp.data.skills)
+  )
+].sort();
+
+// Get all posts (projects + research) for filtering
+const projects = await getCollection('projects');
+const research = await getCollection('research');
+const allContent = [...filterDrafts(projects), ...filterDrafts(research)];
+
+// Format posts for the filter component
+const formattedPosts = allContent.map(item => ({
+  slug: item.slug,
+  title: item.data.title,
+  description: item.data.description,
+  tags: item.data.tags,
+  date: item.data.date.toISOString(),
+  collection: item.collection as 'projects' | 'research',
+}));
+---
+
+<SidebarLayout
+  title="Experience & Skills"
+  description="My professional experience and technical skills"
+  maxWidth="reading"
+>
+  {/* Header */}
+  <div class="mb-12">
+    <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">
+      Experience & Skills
+    </h1>
+    <p class="text-gray-600 text-lg">
+      Professional background and technical expertise.
+    </p>
+  </div>
+
+  {/* Experience Timeline Section */}
+  <section class="mb-20">
+    <h2 class="text-3xl font-bold text-gray-900 mb-8 tracking-tight">
+      Work Experience
+    </h2>
+    <ExperienceTimeline />
+  </section>
+
+  {/* Skills & Evidence Section (Interactive) */}
+  <section class="mb-20">
+    <h2 class="text-3xl font-bold text-gray-900 mb-8 tracking-tight">
+      Skills & Evidence
+    </h2>
+    <SkillsFilter
+      client:load
+      allPosts={formattedPosts}
+      allSkills={allSkillsFromExperiences}
+    />
+  </section>
+</SidebarLayout>

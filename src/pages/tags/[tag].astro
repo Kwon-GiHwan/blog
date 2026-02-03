@@ -1,51 +1,88 @@
 ---
 import { getCollection } from 'astro:content';
-import Base from '@layouts/Base.astro';
+import SidebarLayout from '@layouts/SidebarLayout.astro';
 import ProjectCard from '@components/ProjectCard.astro';
+import ResearchCard from '@components/ResearchCard.astro';
 import { filterDrafts, sortByDate, getAllTags } from '@utils/index';
 
 export async function getStaticPaths() {
   const allProjects = await getCollection('projects');
   const publishedProjects = filterDrafts(allProjects);
-  const allTags = getAllTags(publishedProjects);
+
+  const allResearch = await getCollection('research');
+  const publishedResearch = filterDrafts(allResearch);
+
+  const combinedContent = [...publishedProjects, ...publishedResearch];
+  const allTags = getAllTags(combinedContent);
 
   return allTags.map(tag => {
     const filteredProjects = publishedProjects.filter(project =>
       project.data.tags.includes(tag)
     );
+    const filteredResearch = publishedResearch.filter(research =>
+      research.data.tags.includes(tag)
+    );
 
     return {
       params: { tag },
-      props: { projects: sortByDate(filteredProjects), tag },
+      props: {
+        projects: sortByDate(filteredProjects),
+        research: sortByDate(filteredResearch),
+        tag,
+      },
     };
   });
 }
 
-const { projects, tag } = Astro.props;
+const { projects, research, tag } = Astro.props;
+const totalCount = projects.length + research.length;
 ---
 
-<Base title={`Tag: ${tag}`} description={`All projects tagged with ${tag}`}>
+<SidebarLayout title={`Tag: ${tag}`} description={`All content tagged with ${tag}`}>
   <div class="mb-12">
-    <h1 class="text-4xl font-bold text-white mb-4">
-      <span class="text-blue-400">#</span>{tag}
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">
+      <span class="text-blue-600">#</span>{tag}
     </h1>
-    <p class="text-dark-muted">
-      {projects.length} {projects.length === 1 ? 'project' : 'projects'} with this tag
+    <p class="text-gray-600">
+      {totalCount} {totalCount === 1 ? 'item' : 'items'} with this tag
     </p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    {projects.map(project => (
-      <ProjectCard project={project} />
-    ))}
-  </div>
+  <!-- Projects Section -->
+  {projects.length > 0 && (
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+        Projects ({projects.length})
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map(project => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </section>
+  )}
 
-  <div class="mt-12">
+  <!-- Research Section -->
+  {research.length > 0 && (
+    <section>
+      <h2 class="text-2xl font-semibold text-gray-900 mb-6">
+        Research ({research.length})
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {research.map(item => (
+          <ResearchCard research={item} />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Back Link -->
+  <div class="mt-12 pt-8 border-t border-gray-200">
     <a
       href="/tags"
-      class="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+      class="inline-flex items-center text-blue-600 hover:text-blue-700 font-medium transition-colors"
     >
       ← View all tags
     </a>
   </div>
-</Base>
+</SidebarLayout>

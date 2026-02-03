@@ -1,0 +1,90 @@
+---
+import SidebarLayout from './SidebarLayout.astro';
+import TableOfContents from '@components/TableOfContents.astro';
+import GiscusComments from '@components/GiscusComments.astro';
+import { formatDate, getReadingTime } from '@utils/index';
+import { generateToc } from '@utils/toc';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  tags: string[];
+  content: string;
+}
+
+const { title, description, date, tags, content } = Astro.props;
+const readingTime = getReadingTime(content);
+const toc = generateToc(content);
+---
+
+<SidebarLayout title={title} description={description} maxWidth="article">
+  <article class="w-full">
+    <!-- Article Header with generous spacing -->
+    <header class="mb-12 pb-8 border-b border-gray-200">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+        {title}
+      </h1>
+
+      <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 mb-6">
+        <time datetime={date.toISOString()} class="font-medium">
+          {formatDate(date)}
+        </time>
+        <span class="text-gray-300">•</span>
+        <span>{readingTime}</span>
+      </div>
+
+      <!-- Tags -->
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {tags.map(tag => (
+            <a
+              href={`/tags/${tag}`}
+              class="px-3 py-1.5 bg-gray-100 text-gray-700 text-sm font-medium rounded-full hover:bg-gray-200 transition-colors"
+            >
+              #{tag}
+            </a>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <!-- Two-column layout: Content + TOC (only on XL screens) -->
+    <div class="grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-16">
+      <!-- Main Content with prose styling -->
+      <div class="min-w-0">
+        <!-- Prose container for optimal reading -->
+        <div class="prose prose-lg prose-gray max-w-none">
+          <slot />
+        </div>
+
+        <!-- Comments Section -->
+        <div class="mt-16 pt-12 border-t border-gray-200">
+          <GiscusComments />
+        </div>
+      </div>
+
+      <!-- Table of Contents Sidebar (XL screens only) -->
+      {toc.length > 0 && (
+        <aside class="hidden xl:block">
+          <div class="sticky top-8">
+            <TableOfContents items={toc} />
+          </div>
+        </aside>
+      )}
+    </div>
+
+    <!-- Back to overview link -->
+    <div class="mt-12 pt-8 border-t border-gray-200">
+      <a
+        href={Astro.url.pathname.includes('/research') ? '/research' : '/projects'}
+        class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors group"
+      >
+        <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Back to {Astro.url.pathname.includes('/research') ? 'Research' : 'Projects'}
+      </a>
+    </div>
+  </article>
+</SidebarLayout>

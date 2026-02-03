@@ -4,11 +4,15 @@ description: "Learn how to build blazing-fast static sites with Astro's content 
 date: 2026-02-02
 tags: ["astro", "typescript", "web-dev"]
 draft: false
+image: "/images/projects/astro.svg"
+imageAlt: "Astro static site generator"
 ---
 
 ## Introduction
 
 Welcome to my first blog post! This is a sample post demonstrating the features of this Astro-powered blog.
+
+![Astro Logo](/images/projects/astro.svg)
 
 ### Why Astro?
 
