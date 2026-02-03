@@ -42,7 +42,11 @@ export default function ProfileImage() {
         title="Click me! 😊"
       >
         <img
-          src={isAlternate ? "/images/profile2.jpg" : "/images/profile.jpg"}
+          src={
+            isAlternate
+              ? "/blog/images/profile2.jpg"
+              : "/blog/images/profile.jpg"
+          }
           alt="Profile"
           class={`w-full h-full object-cover transition-all duration-500 ${
             isAlternate ? "scale-110 rotate-6" : "scale-100 rotate-0"

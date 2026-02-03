@@ -5,7 +5,7 @@ abstract: "This comprehensive guide explores Astro's innovative approach to mode
 date: 2026-02-02
 tags: ["astro", "typescript", "web-dev"]
 draft: false
-image: "/images/projects/astro.svg"
+image: "/blog/images/projects/astro.svg"
 imageAlt: "Astro static site generator"
 ---
 
@@ -13,7 +13,7 @@ imageAlt: "Astro static site generator"
 
 Welcome to my first blog post! This is a sample post demonstrating the features of this Astro-powered blog.
 
-![Astro Logo](/images/projects/astro.svg)
+![Astro Logo](/blog/images/projects/astro.svg)
 
 ### Why Astro?
 

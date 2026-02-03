@@ -5,8 +5,8 @@ import preact from "@astrojs/preact";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://YOUR_USERNAME.github.io",
-  // base: "/blog", // Removed - using root path
+  site: "https://kwon-gihwan.github.io",
+  base: "/blog",
   integrations: [
     tailwind({
       applyBaseStyles: false, // We'll use custom base styles

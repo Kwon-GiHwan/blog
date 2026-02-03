@@ -4,7 +4,7 @@ description: "Novel approaches to achieving consensus in large-scale distributed
 date: 2025-11-20
 tags: ["distributed-systems", "algorithms", "research"]
 draft: false
-image: "/images/research/distributed-systems.svg"
+image: "/blog/images/research/distributed-systems.svg"
 imageAlt: "Distributed Systems and Consensus Algorithms"
 ---
 

@@ -5,7 +5,7 @@ abstract: "Discover how Tailwind CSS revolutionizes UI development with its util
 date: 2026-01-28
 tags: ["tailwind", "css", "web-dev"]
 draft: false
-image: "/images/projects/tailwind.svg"
+image: "/blog/images/projects/tailwind.svg"
 imageAlt: "Tailwind CSS utility-first framework"
 ---
 

@@ -4,7 +4,7 @@ description: "Essential TypeScript patterns and practices every developer should
 date: 2026-01-20
 tags: ["typescript", "best-practices"]
 draft: false
-image: "/images/projects/typescript.svg"
+image: "/blog/images/projects/typescript.svg"
 imageAlt: "TypeScript type-safe JavaScript"
 ---
 

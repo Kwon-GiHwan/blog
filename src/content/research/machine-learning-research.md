@@ -5,7 +5,7 @@ abstract: "This research investigates novel attention mechanisms in transformer-
 date: 2026-01-15
 tags: ["machine-learning", "nlp", "research"]
 draft: false
-image: "/images/research/ml.svg"
+image: "/blog/images/research/ml.svg"
 imageAlt: "Machine Learning and NLP Research"
 ---
 
