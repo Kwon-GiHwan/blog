@@ -36,16 +36,25 @@ function isActive(href: string, current: string): boolean {
   const normalizedHref = href.endsWith('/') ? href.slice(0, -1) : href;
   const normalizedCurrent = current.endsWith('/') ? current.slice(0, -1) : current;
 
+  // Exact match for home page
   if (normalizedHref === base || normalizedHref === base.slice(0, -1)) {
     return normalizedCurrent === base || normalizedCurrent === base.slice(0, -1);
   }
-  return normalizedCurrent.startsWith(normalizedHref);
+
+  // For other pages, check if current path starts with href
+  // But only if it's followed by a path separator or is exact match
+  if (normalizedCurrent === normalizedHref) {
+    return true;
+  }
+
+  // Check if starts with href followed by /
+  return normalizedCurrent.startsWith(normalizedHref + '/');
 }
 ---
 
-<div class="flex flex-col h-full p-8 overflow-y-auto">
-  <!-- Logo / Name -->
-  <div class="mb-10">
+<div class="flex flex-col h-full p-8">
+  <!-- Logo / Name (Fixed) -->
+  <div class="mb-10 flex-shrink-0">
     <a href={base} class="block group">
       <h1 class="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors">
         Your Name
@@ -54,13 +63,13 @@ function isActive(href: string, current: string): boolean {
     </a>
   </div>
 
-  <!-- Profile Image -->
-  <div class="mb-10 pb-8 border-b border-gray-200">
+  <!-- Profile Image (Fixed) -->
+  <div class="mb-10 pb-8 border-b border-gray-200 flex-shrink-0">
     <ProfileImage client:load />
   </div>
 
-  <!-- Navigation with enhanced active states -->
-  <nav class="flex-1" aria-label="Main navigation">
+  <!-- Navigation with enhanced active states (Scrollable) -->
+  <nav class="flex-1 overflow-y-auto min-h-0" aria-label="Main navigation">
     <ul class="space-y-1.5">
       {navItems.map(item => (
         <li>
@@ -116,8 +125,8 @@ function isActive(href: string, current: string): boolean {
     </ul>
   </nav>
 
-  <!-- Footer / Social Links -->
-  <div class="mt-auto pt-8 border-t border-gray-200">
+  <!-- Footer / Social Links (Fixed) -->
+  <div class="mt-auto pt-8 border-t border-gray-200 flex-shrink-0">
     <p class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4">Connect</p>
     <div class="flex gap-4 text-gray-400 mb-4">
       <a
@@ -146,18 +155,81 @@ function isActive(href: string, current: string): boolean {
       </a>
     </div>
 
-    <!-- HITS Counter -->
-    <div class="flex justify-center mt-6">
-      <a href="https://hits.seeyoufarm.com" target="_blank" rel="noopener noreferrer">
-        <img
-          src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fkwon-gihwan.github.io%2Fblog&count_bg=%233B82F6&title_bg=%23374151&icon=&icon_color=%23E7E7E7&title=Visitors&edge_flat=false"
-          alt="Visitor count"
-          class="opacity-80 hover:opacity-100 transition-opacity"
-        />
-      </a>
-    </div>
+
   </div>
 </div>
+
+<script>
+  function updateActiveStates() {
+    const currentPath = window.location.pathname;
+    const baseUrl = import.meta.env.BASE_URL;
+    const base = baseUrl.endsWith('/') ? baseUrl : baseUrl + '/';
+
+    // Get all nav links
+    const navLinks = document.querySelectorAll('nav a');
+
+    navLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (!href) return;
+
+      const normalizedHref = href.endsWith('/') ? href.slice(0, -1) : href;
+      const normalizedCurrent = currentPath.endsWith('/') ? currentPath.slice(0, -1) : currentPath;
+
+      let isActive = false;
+
+      // Check if this is the home page
+      if (normalizedHref === base || normalizedHref === base.slice(0, -1)) {
+        isActive = normalizedCurrent === base || normalizedCurrent === base.slice(0, -1);
+      } else {
+        // Exact match or starts with href followed by /
+        isActive = normalizedCurrent === normalizedHref || normalizedCurrent.startsWith(normalizedHref + '/');
+      }
+
+      // Update classes based on active state
+      if (isActive) {
+        // Main nav items
+        if (link.classList.contains('group')) {
+          link.classList.remove('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
+          link.classList.add('text-blue-700', 'bg-blue-50', 'font-semibold');
+          link.setAttribute('aria-current', 'page');
+
+          // Show active indicator
+          const indicator = link.querySelector('.absolute');
+          const arrow = link.querySelector('svg');
+          if (indicator) indicator.classList.remove('hidden');
+          if (arrow) arrow.classList.remove('hidden');
+        } else {
+          // Submenu items
+          link.classList.remove('text-gray-600', 'hover:text-gray-900', 'hover:bg-gray-50');
+          link.classList.add('text-blue-600', 'bg-blue-50', 'font-medium');
+        }
+      } else {
+        // Main nav items
+        if (link.classList.contains('group')) {
+          link.classList.remove('text-blue-700', 'bg-blue-50', 'font-semibold');
+          link.classList.add('text-gray-700', 'hover:bg-gray-50', 'hover:text-gray-900');
+          link.removeAttribute('aria-current');
+
+          // Hide active indicator
+          const indicator = link.querySelector('.absolute');
+          const arrow = link.querySelector('svg');
+          if (indicator) indicator.classList.add('hidden');
+          if (arrow) arrow.classList.add('hidden');
+        } else {
+          // Submenu items
+          link.classList.remove('text-blue-600', 'bg-blue-50', 'font-medium');
+          link.classList.add('text-gray-600', 'hover:text-gray-900', 'hover:bg-gray-50');
+        }
+      }
+    });
+  }
+
+  // Update on page load
+  document.addEventListener('DOMContentLoaded', updateActiveStates);
+
+  // Update on view transitions
+  document.addEventListener('astro:page-load', updateActiveStates);
+</script>
 
 <style>
   /* Custom scrollbar */

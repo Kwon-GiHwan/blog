@@ -3,7 +3,7 @@ title: "Deep Learning Approaches to Natural Language Understanding"
 description: "Exploring transformer architectures and their applications in semantic analysis and language generation."
 abstract: "This research investigates novel attention mechanisms in transformer-based architectures for natural language understanding. We propose efficiency improvements that maintain semantic comprehension while reducing computational complexity from O(n²) to O(n log n). Our approach demonstrates state-of-the-art performance on multiple NLP benchmarks with significantly lower resource requirements."
 date: 2026-01-15
-tags: ["machine-learning", "nlp", "research"]
+tags: ["machine-learning", "nlp", "research", "CUDA"]
 draft: false
 image: "/blog/images/research/ml.svg"
 imageAlt: "Machine Learning and NLP Research"

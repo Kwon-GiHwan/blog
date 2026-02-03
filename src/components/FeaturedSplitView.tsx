@@ -209,10 +209,11 @@ export default function FeaturedSplitView({ posts }: Props) {
           </div>
 
           {/* Right: Preview */}
-          <div class="lg:sticky lg:top-8 lg:self-start">
-            <div
+          <div class="lg:sticky lg:top-8 lg:self-start h-[600px]">
+            <a
               key={selectedPost.slug}
-              class="border border-gray-200 rounded-xl overflow-hidden bg-white shadow-lg preview-content"
+              href={`/blog/${selectedPost.collection}/${selectedPost.slug}/`}
+              class="block h-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-200 cursor-pointer group"
             >
               {/* Hero Image */}
               {selectedPost.image && (
@@ -220,7 +221,7 @@ export default function FeaturedSplitView({ posts }: Props) {
                   <img
                     src={selectedPost.image}
                     alt={selectedPost.imageAlt || selectedPost.title}
-                    class="w-full h-full object-cover"
+                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               )}
@@ -251,51 +252,33 @@ export default function FeaturedSplitView({ posts }: Props) {
                 </div>
 
                 {/* Title */}
-                <h2 class="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
                   {selectedPost.title}
                 </h2>
 
                 {/* Abstract */}
-                <p class="text-gray-700 leading-relaxed mb-6">
+                <p
+                  class="text-gray-700 leading-relaxed mb-6"
+                  style="display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;"
+                >
                   {selectedPost.abstract || selectedPost.description}
                 </p>
 
                 {/* Tags */}
                 {selectedPost.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2 mb-6">
+                  <div class="flex flex-wrap gap-2">
                     {selectedPost.tags.map((tag) => (
                       <span
                         key={tag}
-                        class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                        class="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full group-hover:bg-blue-50 group-hover:text-blue-700 transition-colors"
                       >
                         #{tag}
                       </span>
                     ))}
                   </div>
                 )}
-
-                {/* Read More Button */}
-                <a
-                  href={`/blog/${selectedPost.collection}/${selectedPost.slug}/`}
-                  class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors group"
-                >
-                  Read More
-                  <svg
-                    class="w-4 h-4 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </a>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       )}
