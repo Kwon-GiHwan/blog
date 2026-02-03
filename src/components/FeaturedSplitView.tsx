@@ -153,11 +153,19 @@ export default function FeaturedSplitView({ posts }: Props) {
           {/* Left: Scrollable List */}
           <div class="h-[600px] overflow-y-auto pr-4 space-y-3 scrollable-list">
             {filteredPosts.map((post) => (
-              <button
+              <a
                 key={post.slug}
-                onClick={() => setSelectedPost(post)}
+                href={`/blog/${post.collection}/${post.slug}/`}
+                onClick={(e) => {
+                  // On desktop (lg+), prevent navigation and just update selection
+                  if (window.innerWidth >= 1024) {
+                    e.preventDefault();
+                    setSelectedPost(post);
+                  }
+                  // On mobile, allow default navigation to post
+                }}
                 class={`
-              w-full text-left p-4 rounded-lg border-2 transition-all duration-200
+              block w-full text-left p-4 rounded-lg border-2 transition-all duration-200 cursor-pointer
               ${
                 selectedPost.slug === post.slug
                   ? "border-blue-600 bg-blue-50 shadow-md"
@@ -204,7 +212,7 @@ export default function FeaturedSplitView({ posts }: Props) {
                     </p>
                   </div>
                 </div>
-              </button>
+              </a>
             ))}
           </div>
 
@@ -213,11 +221,11 @@ export default function FeaturedSplitView({ posts }: Props) {
             <a
               key={selectedPost.slug}
               href={`/blog/${selectedPost.collection}/${selectedPost.slug}/`}
-              class="block h-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-200 cursor-pointer group"
+              class="flex flex-col h-full border border-gray-200 rounded-xl overflow-hidden bg-white shadow-lg hover:shadow-xl hover:border-blue-300 transition-all duration-200 cursor-pointer group"
             >
-              {/* Hero Image */}
+              {/* Hero Image - Fixed */}
               {selectedPost.image && (
-                <div class="aspect-video bg-gray-100 overflow-hidden">
+                <div class="flex-shrink-0 aspect-video bg-gray-100 overflow-hidden">
                   <img
                     src={selectedPost.image}
                     alt={selectedPost.imageAlt || selectedPost.title}
@@ -226,10 +234,10 @@ export default function FeaturedSplitView({ posts }: Props) {
                 </div>
               )}
 
-              {/* Content */}
-              <div class="p-8">
-                {/* Category & Date */}
-                <div class="flex items-center gap-3 mb-4">
+              {/* Content - Flexible */}
+              <div class="flex-1 flex flex-col p-8 min-h-0">
+                {/* Category & Date - Fixed */}
+                <div class="flex-shrink-0 flex items-center gap-3 mb-3">
                   <span
                     class={`
                 px-3 py-1 rounded-full text-sm font-medium capitalize
@@ -251,22 +259,21 @@ export default function FeaturedSplitView({ posts }: Props) {
                   </span>
                 </div>
 
-                {/* Title */}
-                <h2 class="text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
+                {/* Title - Fixed */}
+                <h2 class="flex-shrink-0 text-2xl font-bold text-gray-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">
                   {selectedPost.title}
                 </h2>
 
-                {/* Abstract */}
-                <p
-                  class="text-gray-700 leading-relaxed mb-6"
-                  style="display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;"
-                >
-                  {selectedPost.abstract || selectedPost.description}
-                </p>
+                {/* Abstract - Scrollable */}
+                <div class="flex-1 overflow-y-auto mb-4 pr-2">
+                  <p class="text-gray-700 leading-relaxed">
+                    {selectedPost.abstract || selectedPost.description}
+                  </p>
+                </div>
 
                 {/* Tags */}
                 {selectedPost.tags.length > 0 && (
-                  <div class="flex flex-wrap gap-2">
+                  <div class="flex-shrink-0 flex flex-wrap gap-2">
                     {selectedPost.tags.map((tag) => (
                       <span
                         key={tag}

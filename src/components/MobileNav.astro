@@ -24,7 +24,7 @@ function isActive(href: string, current: string): boolean {
 <!-- Mobile header (visible < lg) -->
 <header class="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
   <div class="flex items-center justify-between px-4 py-4">
-    <a href="/" class="text-xl font-bold text-gray-900">
+    <a href={base} class="text-xl font-bold text-gray-900">
       Your Name
     </a>
     <button
@@ -81,44 +81,63 @@ function isActive(href: string, current: string): boolean {
   </nav>
 </header>
 
-<script>
+<script is:inline>
   function initMobileMenu() {
     const button = document.getElementById('mobile-menu-button');
     const menu = document.getElementById('mobile-menu');
-    const menuIcon = button?.querySelector('.menu-icon');
-    const closeIcon = button?.querySelector('.close-icon');
 
-    if (!button || !menu) return;
+    if (!button || !menu) {
+      console.log('Mobile menu elements not found');
+      return;
+    }
 
-    button.addEventListener('click', () => {
-      const isOpen = menu.classList.contains('hidden');
+    const menuIcon = button.querySelector('.menu-icon');
+    const closeIcon = button.querySelector('.close-icon');
 
-      if (isOpen) {
+    // Remove old listeners by cloning (prevents duplicates)
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+
+    const updatedButton = document.getElementById('mobile-menu-button');
+    const updatedMenuIcon = updatedButton.querySelector('.menu-icon');
+    const updatedCloseIcon = updatedButton.querySelector('.close-icon');
+
+    updatedButton.addEventListener('click', () => {
+      const isHidden = menu.classList.contains('hidden');
+
+      if (isHidden) {
+        // Open menu
         menu.classList.remove('hidden');
-        button.setAttribute('aria-expanded', 'true');
-        menuIcon?.classList.add('hidden');
-        closeIcon?.classList.remove('hidden');
+        updatedButton.setAttribute('aria-expanded', 'true');
+        updatedMenuIcon?.classList.add('hidden');
+        updatedCloseIcon?.classList.remove('hidden');
       } else {
+        // Close menu
         menu.classList.add('hidden');
-        button.setAttribute('aria-expanded', 'false');
-        menuIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+        updatedButton.setAttribute('aria-expanded', 'false');
+        updatedMenuIcon?.classList.remove('hidden');
+        updatedCloseIcon?.classList.add('hidden');
       }
     });
 
     // Close menu when clicking a link
-    menu.querySelectorAll('a').forEach(link => {
+    const menuLinks = menu.querySelectorAll('a');
+    menuLinks.forEach(link => {
       link.addEventListener('click', () => {
         menu.classList.add('hidden');
-        button.setAttribute('aria-expanded', 'false');
-        menuIcon?.classList.remove('hidden');
-        closeIcon?.classList.add('hidden');
+        updatedButton.setAttribute('aria-expanded', 'false');
+        updatedMenuIcon?.classList.remove('hidden');
+        updatedCloseIcon?.classList.add('hidden');
       });
     });
   }
 
   // Initialize on page load
-  document.addEventListener('DOMContentLoaded', initMobileMenu);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
 
   // Reinitialize after view transitions
   document.addEventListener('astro:page-load', initMobileMenu);
