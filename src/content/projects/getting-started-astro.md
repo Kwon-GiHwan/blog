@@ -7,6 +7,8 @@ tags: ["astro", "typescript", "web-dev"]
 draft: false
 image: "/blog/images/projects/astro.svg"
 imageAlt: "Astro static site generator"
+githubUrl: "https://github.com/withastro/astro"
+demoUrl: "https://astro.build"
 ---
 
 ## Introduction

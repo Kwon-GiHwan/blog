@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
-const { title, description, date, tags } = project.data;
+const { title, description, date, tags, githubUrl, demoUrl } = project.data;
 
 // Get raw content for reading time and TOC
 const rawContent = project.body;
@@ -27,6 +27,8 @@ const rawContent = project.body;
   date={date}
   tags={tags}
   content={rawContent}
+  githubUrl={githubUrl}
+  demoUrl={demoUrl}
 >
   <Content />
 </ContentLayout>

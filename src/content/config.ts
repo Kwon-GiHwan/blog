@@ -10,6 +10,8 @@ const contentSchema = z.object({
   draft: z.boolean().default(false),
   image: z.string().optional(),
   imageAlt: z.string().optional(),
+  githubUrl: z.string().url().optional(), // GitHub repository link
+  demoUrl: z.string().url().optional(), // Live demo/deployment link
 });
 
 const projectsCollection = defineCollection({
