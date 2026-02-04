@@ -107,4 +107,24 @@
     .overflow-y-auto::-webkit-scrollbar-thumb:hover {
         background: #94a3b8;
     }
+
+    /* Math Equation Styling */
+    .prose .katex-display {
+        @apply overflow-x-auto overflow-y-hidden py-4;
+    }
+
+    .prose .katex {
+        font-size: 1.1em;
+    }
+
+    .prose .katex-html {
+        @apply inline-block;
+    }
+
+    /* Mobile math equation adjustments */
+    @media (max-width: 768px) {
+        .prose .katex-display {
+            font-size: 0.9em;
+        }
+    }
 }

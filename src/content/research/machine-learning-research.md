@@ -29,6 +29,28 @@ Recent advances in deep learning have revolutionized how we approach NLP tasks. 
 
 We employed a multi-stage training approach combining unsupervised pre-training with task-specific fine-tuning.
 
+### Mathematical Foundations
+
+Our approach builds on the core transformer attention mechanism. The scaled dot-product attention is computed as:
+
+$$
+\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V
+$$
+
+where $Q$, $K$, and $V$ represent the query, key, and value matrices respectively, and $d_k$ is the dimension of the key vectors.
+
+We optimize the cross-entropy loss $\mathcal{L}$ during training:
+
+$$
+\mathcal{L} = -\sum_{i=1}^{N} y_i \log(\hat{y}_i)
+$$
+
+The gradient descent update rule with learning rate $\eta$ follows:
+
+$$
+\theta_{t+1} = \theta_t - \eta \nabla_\theta \mathcal{L}(\theta_t)
+$$
+
 ### Data Collection
 
 Our dataset consisted of diverse text sources:
